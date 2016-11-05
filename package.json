@@ -1,0 +1,35 @@
+{
+  "name": "kubus",
+  "version": "0.1.0",
+  "description": "Document-model for CouchDB",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/go-ike/kubus.git"
+  },
+  "keywords": [
+    "kubus",
+    "couchdb",
+    "couch",
+    "document",
+    "javascript",
+    "node"
+  ],
+  "author": "Mateus Pinheiro <mateus.pinheiro@gmail.com>",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/go-ike/kubus/issues"
+  },
+  "homepage": "https://github.com/go-ike/kubus#readme",
+  "dependencies": {
+    "camelcase": "^3.0.0",
+    "cloudant": "^1.5.2",
+    "lodash": "^4.16.6",
+    "nano": "^6.2.0",
+    "node-uuid": "^1.4.7",
+    "validate.js": "^0.10.0"
+  }
+}
