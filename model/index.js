@@ -1,16 +1,29 @@
 const validate = require('validate.js');
+const uuid     = require('node-uuid');
 const _        = require('lodash');
-const Db       = require('../db');
+const Db       = require('../db')();
+console.log('Chamando do Model');
+
+const _validation = Symbol();
 
 class KubusModel {
 	constructor(object) {
 		this.type = this.constructor.name;
-		
-		this._validation = {};
-		this._docValidation = {
+		this[_validation] = {};
+
+		this.setValidation({
 			_id: { presence: true },
 			_rev: {}
-		}
+		});
+	}
+
+	/**
+	 * Sets the model validation object
+	 * @param {Object} validationObject Validate.js compliant validation
+	 *                                  object
+	 */
+	setValidation(validationObject) {
+		this[_validation] = Object.assign(this[_validation], validationObject);
 	}
 
 	/**
@@ -24,7 +37,7 @@ class KubusModel {
 		let before = _.cloneDeep(this);
 
 		this.validate()
-		.then(validObject => Db.insert(validObject))
+		.then(isValid => Db.insert(this))
 		.then(inserted => {
 			resolve(inserted);
 			if(before._rev) self.onUpdate(before, this);
@@ -97,13 +110,9 @@ class KubusModel {
 	 * @return {Promise}
 	 */
 	validate() {
-	return new Promise((resolve, reject) => {
-		const cleanObject = _clean(this);
-		const validation  = Object.assing(this._validation, this._docValidation);
-		
-		validate.async(validation, cleanObject)
-		.then(success => { resolve(cleanObject);})
-		.catch(ValidationErrors, error => { reject(error); })
+	return new Promise((resolve, reject) => {		
+		validate.async(this, this[_validation])
+		.then(success => { resolve(true);})
 		.catch(error => reject(error));
 	});
 	}
@@ -122,6 +131,7 @@ class KubusModel {
 
 	/* static */
 
+
 	/**
 	 * Gets a document
 	 * @param  {String} documentId The document ID
@@ -139,15 +149,6 @@ class KubusModel {
 		.catch(error => reject(error));
 	});
 	}
-
-
-	/* private */
-
-
-	_clean() {
-		let clean = _.cloneDeep(this);
-		delete clean._validation;
-		delete clean._docValidation;
-		return clean;
-	}
 }
+
+module.exports = KubusModel;

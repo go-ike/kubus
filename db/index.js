@@ -1,7 +1,8 @@
 const promisify = require("es6-promisify");
 let instance;
 
-module.exports = function (config) {
+module.exports = function(config) {
+	if(!instance && !config) return false;
 	if(instance && !config) return instance;
 
 	let nano = require('nano')(config.url);
