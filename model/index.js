@@ -2,7 +2,6 @@ const validate = require('validate.js');
 const uuid     = require('node-uuid');
 const _        = require('lodash');
 const Db       = require('../db')();
-console.log('Chamando do Model');
 
 const _validation = Symbol();
 

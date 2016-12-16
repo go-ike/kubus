@@ -25,9 +25,9 @@
   },
   "homepage": "https://github.com/go-ike/kubus#readme",
   "dependencies": {
-    "camelcase": "^3.0.0",
     "cloudant": "^1.5.2",
     "es6-promisify": "^5.0.0",
+    "i": "^0.3.5",
     "lodash": "^4.16.6",
     "nano": "^6.2.0",
     "node-uuid": "^1.4.7",
