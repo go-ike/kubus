@@ -89,7 +89,7 @@ class KubusView {
 	 * @return {Proise}
 	 */
 	raw(options) {
-		return Db.view(this[_docId], 'main', options);
+		return Db.view(this[_docId], 'main', options)
 	}
 
 	/**
@@ -132,7 +132,7 @@ class KubusView {
 		this[_views][name] = { map: this._prepareFunctionString(map) }
 
 		if(reduce !== undefined)
-			this[_views][name][reduce] = this._prepareFunctionString(reduce)			
+			this[_views][name]['reduce'] = this._prepareFunctionString(reduce)			
 	}
 
 	/**
@@ -178,8 +178,8 @@ class KubusView {
 		let fn = functionExpression.toString()
 		let functionNameRegex = /^[a-z]+()/i
 
-		fn = fn.replace(functionNameRegex, 'function');
-		return fn;
+		fn = fn.replace(functionNameRegex, 'function')
+		return fn
 	}
 }
 
