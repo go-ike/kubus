@@ -1,3 +1,9 @@
+/**
+ * KUBUS MODEL
+ * Abstact class to be extended by classes representing a CouchDB
+ * document.
+ */
+
 const validate = require('validate.js');
 const uuid     = require('node-uuid');
 const _        = require('lodash');
@@ -18,8 +24,7 @@ class KubusModel {
 
 	/**
 	 * Sets the model validation object
-	 * @param {Object} validationObject Validate.js compliant validation
-	 *                                  object
+	 * @param {Object} validationObject Validate.js compliant validation object
 	 */
 	setValidation(validationObject) {
 		this[_validation] = Object.assign(this[_validation], validationObject);

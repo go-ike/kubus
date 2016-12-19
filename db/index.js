@@ -1,6 +1,16 @@
+/**
+ * DB
+ * Singleton class for CouchDB database access through Nano
+ */
+
 const promisify = require("es6-promisify");
 let instance;
 
+/**
+ * Exports a singleton for unique Database access
+ * @param  {Object} config Nano's config Object
+ * @return {Object}
+ */
 module.exports = function(config) {
 	if(!instance && !config) return false;
 	if(instance && !config) return instance;
@@ -14,6 +24,11 @@ module.exports = function(config) {
 	return instance;
 }
 
+/**
+ * Promisify Nano.js library, because reasons
+ * @param  {Object} object The Nano object to be promisified
+ * @return {Object}
+ */
 function promisifyNano(object) {
 	const props = ['insert', 'destroy', 'get', 'head', 'copy',
 	'bulk', 'list', 'fetch', 'fetchRevs', 'multipart.insert',
