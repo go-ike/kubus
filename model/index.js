@@ -39,7 +39,7 @@ class KubusModel {
 	return new Promise((resolve, reject) => {
 		if(!this._id) this._id = uuid.v4()
 		let before = _.cloneDeep(this)
-		
+
 		this.validate()
 		.then(isValid => Db.insert(this))
 		.then(inserted => {
@@ -144,12 +144,7 @@ class KubusModel {
 	static get(id) {
 	return new Promise((resolve, reject) => {
 		Db.get(id)
-		.then(body => {
-			if(body.type != this.type) 
-				reject(new Error('Not a' + this.type + ' document'))
-			else
-				resolve(new this(body))
-		})
+		.then(body => resolve(new this(body)))
 		.catch(error => reject(error))
 	})
 	}
