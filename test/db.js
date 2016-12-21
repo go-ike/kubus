@@ -11,13 +11,15 @@ describe('Db', function() {
 	before('setup database', () => {
 		kubus.setup({
 			url: process.env.COUCH_DB,
-			name: 'teste',
+			name: 'kubus-test',
 			viewsFolder: `${__dirname}/support/dbviews`,
 			viewsSuffix: '.view.js'
 		});
 	})
 
-	describe('#require', () => {
+	describe('#setup', () => {
+		it('should create the database if it doesn\'t exist')
+		it('should return an existing database')
 		it('should return the same instance for every require', done => {
 			let db1 = require('../db')()
 			let db2 = require('../db')()
@@ -178,10 +180,87 @@ describe('Db', function() {
 			.catch(err => done(err))
 		})
 		
-		it('should get a view\'s result')
-		it('should get a view\'s result with its list function')
-		it('should get a document with its show function')
-		it('should call the update function on specific doc')
-		it('should get the cloudant search results')
+		it('should get a view\'s result', done => {
+			let Db        = require('../db')()
+			let sampleDoc = require('./support/db/typed-doc.js')()
+			let designDoc = require('./support/db/design-doc.js')
+
+			Db.get(designDoc._id)
+			.then(designDocFound => Db.destroy(designDocFound._id, designDocFound._rev))
+			.catch(designDocNotFound => {
+				// If the doc is not found (404) continue business as usual
+				if(designDocNotFound.statusCode == 404) return true
+				else done(designDocNotFound)
+			})
+			.then(() => Db.bulk({ docs: [sampleDoc, designDoc] }))
+			.then(() => Db.view('test', 'main'))
+			.then(res => {
+				assert.isAtLeast(res.total_rows, 1)
+				done()
+			})
+			.catch(err => done(err))
+		})
+
+		it('should get a view\'s result with its list function', done => {
+			let Db        = require('../db')()
+			let sampleDoc = require('./support/db/typed-doc.js')()
+			let designDoc = require('./support/db/design-doc.js')
+
+			Db.get(designDoc._id)
+			.then(designDocFound => Db.destroy(designDocFound._id, designDocFound._rev))
+			.catch(designDocNotFound => {
+				// If the doc is not found (404) continue business as usual
+				if(designDocNotFound.statusCode == 404) return true
+				else done(designDocNotFound)
+			})
+			.then(() => Db.bulk({ docs: [sampleDoc, designDoc] }))
+			.then(() => Db.viewWithList('test', 'main', 'main'))
+			.then(res => {
+				assert.isAtLeast(res.length, 1)
+				done()
+			})
+			.catch(err => done(err))
+		})
+		it('should get a document with its show function', done => {
+			let Db        = require('../db')()
+			let sampleDoc = require('./support/db/typed-doc.js')()
+			let designDoc = require('./support/db/design-doc.js')
+
+			Db.get(designDoc._id)
+			.then(designDocFound => Db.destroy(designDocFound._id, designDocFound._rev))
+			.catch(designDocNotFound => {
+				// If the doc is not found (404) continue business as usual
+				if(designDocNotFound.statusCode == 404) return true
+				else done(designDocNotFound)
+			})
+			.then(() => Db.bulk({ docs: [sampleDoc, designDoc] }))
+			.then(() => Db.show('test', 'main', sampleDoc._id))
+			.then(show => {
+				assert.equal(show, "<h1>anything</h1>")
+				done()
+			})
+			.catch(err => done(err))
+		})
+
+		it('should get the cloudant search results', done => {
+			let Db        = require('../db')()
+			let sampleDoc = require('./support/db/typed-doc.js')()
+			let designDoc = require('./support/db/design-doc.js')
+
+			Db.get(designDoc._id)
+			.then(designDocFound => Db.destroy(designDocFound._id, designDocFound._rev))
+			.catch(designDocNotFound => {
+				// If the doc is not found (404) continue business as usual
+				if(designDocNotFound.statusCode == 404) return true
+				else done(designDocNotFound)
+			})
+			.then(() => Db.bulk({ docs: [sampleDoc, designDoc] }))
+			.then(() => Db.search('test', 'main', { q: "something:'anything'"}))
+			.then(res => {
+				assert.isAtLeast(res.rows.length, 1)
+				done()
+			})
+			.catch(err => done(err))
+		})
 	})
 });
