@@ -4,22 +4,22 @@
  * document.
  */
 
-const validate = require('validate.js');
-const uuid     = require('node-uuid');
-const _        = require('lodash');
-const Db       = require('../db')();
+const validate = require('validate.js')
+const uuid     = require('node-uuid')
+const _        = require('lodash')
+const Db       = require('../db')()
 
-const _validation = Symbol();
+const _validation = Symbol()
 
 class KubusModel {
 	constructor(object) {
-		this.type = this.constructor.name;
-		this[_validation] = {};
+		this.type = this.constructor.name
+		this[_validation] = {}
 
 		this.setValidation({
 			_id: { presence: true },
 			_rev: {}
-		});
+		})
 	}
 
 	/**
@@ -27,7 +27,7 @@ class KubusModel {
 	 * @param {Object} validationObject Validate.js compliant validation object
 	 */
 	setValidation(validationObject) {
-		this[_validation] = Object.assign(this[_validation], validationObject);
+		this[_validation] = Object.assign(this[_validation], validationObject)
 	}
 
 	/**
@@ -37,19 +37,19 @@ class KubusModel {
 	 */
 	save() {
 	return new Promise((resolve, reject) => {
-		if(!this._id) this._id = uuid.v4();
-		let before = _.cloneDeep(this);
-
+		if(!this._id) this._id = uuid.v4()
+		let before = _.cloneDeep(this)
+		
 		this.validate()
 		.then(isValid => Db.insert(this))
 		.then(inserted => {
-			resolve(inserted);
-			if(before._rev) self.onUpdate(before, this);
-			else self.onCreate(before, this);
-			onCreateOrUpdate(before, this);
+			resolve(inserted)
+			if(before._rev) self.onUpdate(before, this)
+			else self.onCreate(before, this)
+			onCreateOrUpdate(before, this)
 		})
-		.catch(error =>{ reject(error) });
-	});
+		.catch(error =>{ reject(error) })
+	})
 	}
 
 	/**
@@ -59,17 +59,17 @@ class KubusModel {
 	delete() {
 	return new Promise((resolve, reject) => {
 		if (!this._rev || !this._id) {
-			reject(new Error('Document hasn\'t been saved yet'));
-			return;
+			reject(new Error('Document hasn\'t been saved yet'))
+			return
 		}
 
 		Db.destroy(this._id, this._rev)
 		.then(deleted => {
-			resolve(deleted);
-			this.onDelete(this);
+			resolve(deleted)
+			this.onDelete(this)
 		})
-		.catch(error => reject(error));
-	});
+		.catch(error => reject(error))
+	})
 	}
 
 	/**
@@ -77,7 +77,7 @@ class KubusModel {
 	 * @return {Promise|KubusModel}
 	 */
 	clone() {
-		return new this.constructor(this);
+		return new this.constructor(this)
 	}
 
 	/**
@@ -91,8 +91,8 @@ class KubusModel {
 	return new Promise((resolve, reject) => {
 		Db.attachment.insert(this._id, fileName, data, contentType, this._rev)
 		.then(success => resolve(success))
-		.catch(error => reject(error));
-	});
+		.catch(error => reject(error))
+	})
 	}
 
 	/**
@@ -104,8 +104,8 @@ class KubusModel {
 	return new Promise((resolve, reject) => {
 		db.attachment.get(this._id, fileName)
 		.then(success => resolve(succes))
-		.catch(error => reject(error));
-	});
+		.catch(error => reject(error))
+	})
 	}
 
 	/**
@@ -116,9 +116,9 @@ class KubusModel {
 	validate() {
 	return new Promise((resolve, reject) => {		
 		validate.async(this, this[_validation])
-		.then(success => { resolve(true);})
-		.catch(error => reject(error));
-	});
+		.then(success => resolve(true))
+		.catch(error => reject(error))
+	})
 	}
 
 	/**
@@ -146,13 +146,13 @@ class KubusModel {
 		Db.get(id)
 		.then(body => {
 			if(body.type != this.type) 
-				reject(new Error('Not a' + this.type + ' document'));
+				reject(new Error('Not a' + this.type + ' document'))
 			else
-				resolve(new this(body));
+				resolve(new this(body))
 		})
-		.catch(error => reject(error));
-	});
+		.catch(error => reject(error))
+	})
 	}
 }
 
-module.exports = KubusModel;
+module.exports = KubusModel
