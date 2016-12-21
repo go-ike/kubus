@@ -6,7 +6,7 @@ const fs     = require('fs')
 
 describe('Db', function() {
 	this.timeout(8000)
-	this.slow(2000)
+	this.slow(3000)
 
 	before('setup database', () => {
 		kubus.setup({
